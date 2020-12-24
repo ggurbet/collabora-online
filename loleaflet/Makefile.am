@@ -177,6 +177,11 @@ NODE_MODULES_JS_DST = $(patsubst %.js,$(DIST_FOLDER)/%.js,$(NODE_MODULES_JS))
 LOLEAFLET_LIBS_JS_SRC = $(patsubst %.js,$(srcdir)/js/%.js,$(LOLEAFLET_LIBS_JS))
 LOLEAFLET_LIBS_JS_DST = $(patsubst %.js,$(DIST_FOLDER)/%.js,$(LOLEAFLET_LIBS_JS))
 
+CANVASSECTION:
+	$(srcdir)/node_modules/typescript/bin/tsc --project $(srcdir)/tsconfig.json
+
+src/layer/tile/CanvasSectionContainer.js: CANVASSECTION
+
 LOLEAFLET_JS =\
 	src/Leaflet.js \
 	src/errormessages.js \
@@ -199,6 +204,7 @@ LOLEAFLET_JS =\
 	src/map/Map.js \
 	src/map/Clipboard.js \
 	src/layer/Layer.js \
+	src/layer/tile/CanvasSectionContainer.js \
 	src/layer/tile/GridLayer.js \
 	src/layer/tile/TileLayer.js \
 	src/layer/tile/CanvasTileLayer.js \
@@ -329,7 +335,7 @@ LOLEAFLET_JS =\
 	src/layer/marker/DivOverlay.js \
 	src/main.js
 
-LOLEAFLET_JS_SRC = $(shell find $(srcdir)/src -name '*.js')
+LOLEAFLET_JS_SRC = $(shell find $(srcdir)/src -name '*.js') src/layer/tile/CanvasSectionContainer.js
 LOLEAFLET_JS_DST = $(patsubst $(srcdir)/src/%.js,$(DIST_FOLDER)/src/%.js,$(LOLEAFLET_JS_SRC))
 
 COMMA := ,
@@ -419,7 +425,8 @@ build-loleaflet: \
 	$(DIST_FOLDER)/device-tablet.css \
 	$(DIST_FOLDER)/device-desktop.css \
 	$(DIST_FOLDER)/bundle.js \
-	$(DIST_FOLDER)/loleaflet.html
+	$(DIST_FOLDER)/loleaflet.html \
+	CANVASSECTION
 	@echo "build loleaflet completed"
 if ENABLE_ANDROIDAPP
 	@if test -d "$(APP_BRANDING_DIR)" ; then cp -a "$(APP_BRANDING_DIR)/branding.css" "$(APP_BRANDING_DIR)/branding.js" $(DIST_FOLDER)/ ; else touch $(DIST_FOLDER)/branding.css ; fi
@@ -439,7 +446,7 @@ $(INTERMEDIATE_DIR)/admin-src.js: $(LOLEAFLET_ADMIN_TS_JS) $(LOLEAFLET_ADMIN_JS)
 	@$(NODE) node_modules/eslint/bin/eslint.js $(srcdir)/admin/src --ignore-path $(srcdir)/.eslintignore --config $(srcdir)/.eslintrc
 	@awk 'FNR == 1 {print ""} 1' $(LOLEAFLET_ADMIN_TS_JS) $(patsubst %.js,$(srcdir)/%.js,$(LOLEAFLET_ADMIN_JS)) > $@
 
-$(INTERMEDIATE_DIR)/loleaflet-src.js: $(call prereq_loleaflet)
+$(INTERMEDIATE_DIR)/loleaflet-src.js: $(call prereq_loleaflet) CANVASSECTION
 	@mkdir -p $(dir $@)
 	$(abs_top_srcdir)/scripts/unocommands.py --check $(abs_top_srcdir)
 	@echo "Checking for loleaflet JS errors..."
@@ -453,7 +460,7 @@ $(DIST_FOLDER)/bundle.css: $(call prereq_css)
 	@$(NODE) node_modules/stylelint/bin/stylelint.js --config $(srcdir)/.stylelintrc.json $(srcdir)/css/*.css
 	$(call bundle_css)
 
-$(DIST_FOLDER)/bundle.js: $(INTERMEDIATE_DIR)/loleaflet-src.js $(call prereq_all)
+$(DIST_FOLDER)/bundle.js: $(INTERMEDIATE_DIR)/loleaflet-src.js $(call prereq_all) CANVASSECTION
 	@mkdir -p $(dir $@)
 	$(call bundle_all)
 
