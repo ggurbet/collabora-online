@@ -62,7 +62,7 @@ L.TileSectionManager = L.Class.extend({
 
 	_addTilesSection: function () {
 		var that = this;
-		var added = this._sectionContainer.addSection({
+		this._sectionContainer.addSection({
 			name: 'tiles',
 			anchor: 'top left',
 			position: [250 * that._dpiScale, 250 * that._dpiScale], // Set its initial position to somewhere blank. Other sections shouldn't cover this point after initializing.
@@ -72,7 +72,8 @@ L.TileSectionManager = L.Class.extend({
 			zIndex: 1,
 			interactable: true,
 			myProperties: { docLayer: that },
-			onMouseMove: function () { },
+			onInitialize: function () {},
+			onMouseMove: function () {},
 			onMouseDown: function () {},
 			onMouseUp: function () {},
 			onClick: function () {},
@@ -86,10 +87,6 @@ L.TileSectionManager = L.Class.extend({
 			onNewDocumentTopLeft: function () {},
 			onDraw: function () {}
 		});
-
-		if (added) {
-			console.log('test');
-		}
 	},
 
 	startUpdates: function () {
