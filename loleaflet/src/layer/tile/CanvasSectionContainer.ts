@@ -155,7 +155,6 @@ class CanvasSectionContainer {
 		this.canvas.ontouchmove = this.onTouchMove.bind(this);
 		this.canvas.ontouchend = this.onTouchEnd.bind(this);
 		this.canvas.ontouchcancel = this.onTouchCancel.bind(this);
-		this.canvas.onresize = this.onResize.bind(this);
 	}
 
 	private clearMousePositions () {
@@ -421,9 +420,17 @@ class CanvasSectionContainer {
 		this.potentialLongPress = false;
 	}
 
-	onResize (e: Event) {
-		// canvas.style.width, canvas.width and height counterparts are handled outside for now.
-		// TODO: Move canvas.width and canvas.height handling here, keep canvas.style.width and canvas.style.height handling outside.
+	onResize (newWidth: number, newHeight: number) {
+		this.dpiScale = window.devicePixelRatio;
+		this.canvas.width = newWidth;
+		this.canvas.height = newHeight;
+
+		// CSS pixels can be fractional, but need to round to the same real pixels
+		var cssWidth: number = newWidth / this.dpiScale; // NB. beware
+		var cssHeight = newHeight / this.dpiScale;
+		this.canvas.style.width = cssWidth.toFixed(4) + 'px';
+		this.canvas.style.height = cssHeight.toFixed(4) + 'px';
+
 		this.clearMousePositions();
 		this.right = this.canvas.width;
 		this.bottom = this.canvas.height;

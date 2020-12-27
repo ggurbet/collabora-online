@@ -545,6 +545,9 @@ L.CanvasTileLayer = L.TileLayer.extend({
 		this._painter = new L.CanvasTilePainter(this);
 		this._container.style.position = 'absolute';
 
+		this._sectionContainer = new CanvasSectionContainer(this._canvas);
+		this._addTilesSection();
+
 		// For mobile/tablet the hammerjs swipe handler already uses a requestAnimationFrame to fire move/drag events
 		// Using L.CanvasTilePainter's own requestAnimationFrame loop to do the updates in that case does not perform well.
 		if (window.mode.isMobile() || window.mode.isTablet()) {
@@ -563,8 +566,6 @@ L.CanvasTileLayer = L.TileLayer.extend({
 		this._map.on('move', this._syncTilePanePos, this);
 
 		this._map.on('viewrowcolumnheaders', this._updateRenderBackground, this);
-
-		this._initSectionContainer();
 	},
 
 	_syncTilePanePos: function () {
@@ -573,15 +574,6 @@ L.CanvasTileLayer = L.TileLayer.extend({
 			var mapPanePos = this._map._getMapPanePos();
 			L.DomUtil.setPosition(tilePane, new L.Point(-mapPanePos.x , -mapPanePos.y));
 		}
-	},
-
-	_initSectionContainer: function () {
-		// SectionContainer can't reach events. They are handled by tilepane.
-		this._sectionContainer = new CanvasSectionContainer(this._canvas);
-
-
-
-		this._addTilesSection();
 	},
 
 	_addTilesSection: function () {
