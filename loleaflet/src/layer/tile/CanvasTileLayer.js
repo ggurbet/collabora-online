@@ -328,32 +328,6 @@ L.TileSectionManager = L.Class.extend({
 		this.stopUpdates();
 	},
 
-	clear: function (ctx) {
-		if (!ctx)
-			ctx = this._paintContext();
-		// First render the background / sheet grid if we can
-		if (this.renderBackground) {
-			this.renderBackground(this._canvasCtx, ctx);
-		}
-		else
-		{
-			if (this._layer._debug) {
-				this._canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-				for (var i = 0; i < ctx.paneBoundsList.length; ++i)
-					this._oscCtxs[i].fillStyle = 'rgba(255, 0, 0, 0.5)';
-			}
-			else
-			{
-				this._canvasCtx.fillStyle = 'white';
-				for (var i = 0; i < ctx.paneBoundsList.length; ++i)
-					this._oscCtxs[i].fillStyle = 'white';
-			}
-			this._canvasCtx.fillRect(0, 0, this._pixWidth, this._pixHeight);
-			for (var i = 0; i < ctx.paneBoundsList.length; ++i)
-				this._oscCtxs[i].fillRect(0, 0, this._offscreenCanvases[i].width, this._offscreenCanvases[i].height);
-		}
-	},
-
 	// Details of tile areas to render
 	_paintContext: function() {
 		var tileSize = new L.Point(this._layer._getTileSize(), this._layer._getTileSize());
