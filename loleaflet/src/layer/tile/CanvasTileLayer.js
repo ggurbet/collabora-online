@@ -518,10 +518,6 @@ L.TileSectionManager = L.Class.extend({
 		};
 	},
 
-	_drawDebuggingGrid: function() {
-
-	},
-
 	_updateWithRAF: function () {
 		// update-loop with requestAnimationFrame
 		this._canvasRAF = L.Util.requestAnimFrame(this._updateWithRAF, this, false /* immediate */);
