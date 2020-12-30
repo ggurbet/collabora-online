@@ -211,6 +211,7 @@ L.TileSectionManager = L.Class.extend({
 
 						painter._zoomRAF = requestAnimationFrame(rafFunc);
 					};
+					this.rafFunc = rafFunc;
 					rafFunc();
 				},
 				_calcZoomFrameScale: function (zoom, newCenter) {
@@ -231,12 +232,12 @@ L.TileSectionManager = L.Class.extend({
 						this._zoomAnimation();
 					}
 				},
-				zoomStepEnd: function () {
+				zoomStepEnd: function (zoom, newCenter) {
 					this._zoomFrameScale = undefined;
 					if (this._inZoomAnim) {
 						cancelAnimationFrame(this._zoomRAF);
 						this._calcZoomFrameScale(zoom, newCenter);
-						this._rafFunc();
+						this.rafFunc();
 						this._zoomFrameScale = undefined;
 						this._inZoomAnim = false;
 					}
@@ -659,8 +660,8 @@ L.CanvasTileLayer = L.TileLayer.extend({
 		this._painter._sectionContainer.getSectionWithName('tiles').myProperties.zoomStep(zoom, newCenter);
 	},
 
-	zoomStepEnd: function () {
-		this._painter._sectionContainer.getSectionWithName('tiles').myProperties.zoomStepEnd();
+	zoomStepEnd: function (zoom, newCenter) {
+		this._painter._sectionContainer.getSectionWithName('tiles').myProperties.zoomStepEnd(zoom, newCenter);
 	},
 
 	_viewReset: function (e) {
